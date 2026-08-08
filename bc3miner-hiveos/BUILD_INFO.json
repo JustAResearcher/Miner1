@@ -1,6 +1,6 @@
 {
   "package": "bc3miner-hiveos",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "payload_source": "__PAYLOAD_SOURCE__",
   "source_archive_sha256": "__SOURCE_ARCHIVE_SHA256__",
   "payloads": {

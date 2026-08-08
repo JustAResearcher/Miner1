@@ -5,8 +5,8 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 readonly SCRIPT_DIR
 readonly SM89_BINARY="${SCRIPT_DIR}/lib/sm89/bc3miner"
 readonly SM120_BINARY="${SCRIPT_DIR}/lib/sm120/bc3miner"
-readonly SM89_SHA256="dde97ba0b332b3c0ade275c7ca209ced015513fdcbcee643e80502e9026406ad"
-readonly SM120_SHA256="ba8d26ed6f0574d81a787d09a5a4022486b503989f870572da23cb06d1e91708"
+readonly SM89_SHA256="26629330c9d19ef85a44307f8a0ca07c0842ac28e6db3bd25a39f6447089ec62"
+readonly SM120_SHA256="381cd83b27e2291c973e4d90139ff998b40e9cd44663117629551759fc1c59ca"
 readonly RATE_DIR="${BC3MINER_RATE_DIR:-/var/log/miner/custom/bc3miner-hiveos/rates}"
 
 die() {

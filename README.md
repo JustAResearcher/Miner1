@@ -1,11 +1,12 @@
 # BC3Miner Linux packages
 
-Miner1 v0.1.1 distributes the dev-fee-free BC3 SHA3-256T miner in two Linux
-packages, each with a SHA-256 sidecar:
+Miner1 distributes the dev-fee-free BC3 SHA3-256T miner in Linux packages with
+SHA-256 sidecars:
 
 - `bc3miner-0.1.1-linux-x86_64.tar.gz` for CatStack automatic installation and
   standalone Ubuntu/MeowOS installation.
-- `bc3miner-hiveos-0.1.1.tar.gz` for HiveOS Custom Miner installation.
+- `bc3miner-hiveos-0.1.2.tar.gz` for older and current HiveOS Custom Miner
+  installation.
 
 Both packages support NVIDIA RTX 40-series and RTX 50-series GPUs, including
 mixed-generation rigs. CatStack's built-in BC3Miner definition downloads the
@@ -29,29 +30,33 @@ or HiveOS overclock settings.
 - NVIDIA driver 580 or newer
 - NVIDIA compute capability 8.9 and/or 12.0
 
-The default public BC3Miner v0.1.1 payloads require glibc 2.34 and GLIBCXX
-3.4.29 (Ubuntu 22.04-class userspace). The builder also accepts separately
-validated HiveOS-compatible payloads. The wrapper detects an incompatible
-runtime and exits; it never replaces system libraries.
+The v0.1.2 HiveOS payloads require at most GLIBC 2.14 and have no dynamic
+GLIBCXX dependency. They were validated in Ubuntu 18.04 with glibc 2.27. The
+wrapper detects an incompatible runtime and exits; it never replaces system
+libraries. NVIDIA driver 580 or newer is still required.
 
 ## Build locally
 
-The builder downloads the public BC3Miner v0.1.1 Linux package and verifies its
-pinned SHA-256 before extracting the two pinned solver payloads:
+The builder can consume the public v0.1.1 Linux package for current systems,
+but reproducing the v0.1.2 older-HiveOS release requires the two explicitly
+validated compatibility payloads:
 
 ```bash
-bash scripts/build-hiveos-package.sh
-bash tests/test-hiveos-package.sh dist/bc3miner-hiveos-0.1.1.tar.gz
+bash scripts/build-hiveos-package.sh \
+  --sm89 /path/to/validated/sm89/bc3miner \
+  --sm89-sha256 26629330c9d19ef85a44307f8a0ca07c0842ac28e6db3bd25a39f6447089ec62 \
+  --sm120 /path/to/validated/sm120/bc3miner \
+  --sm120-sha256 381cd83b27e2291c973e4d90139ff998b40e9cd44663117629551759fc1c59ca
+bash tests/test-hiveos-package.sh dist/bc3miner-hiveos-0.1.2.tar.gz
 ```
 
 Outputs:
 
-- `dist/bc3miner-hiveos-0.1.1.tar.gz`
-- `dist/bc3miner-hiveos-0.1.1.tar.gz.sha256`
+- `dist/bc3miner-hiveos-0.1.2.tar.gz`
+- `dist/bc3miner-hiveos-0.1.2.tar.gz.sha256`
 
-The CatStack/standalone bundle is produced by the BC3Miner Linux packaging
-pipeline and is attached beside these HiveOS assets in the Miner1 v0.1.1
-release; this HiveOS builder does not rebuild that separate bundle.
+The CatStack/standalone bundle remains in the Miner1 v0.1.1 release; this
+HiveOS builder does not rebuild that separate bundle.
 
 For an offline/reproducible rebuild, pass a previously downloaded, unmodified
 upstream archive. It is checked against the same pinned digest:
@@ -81,7 +86,7 @@ with these values:
 | Field | Value |
 | --- | --- |
 | Miner name | `bc3miner-hiveos` |
-| Installation URL | `https://github.com/JustAResearcher/Miner1/releases/download/v0.1.1/bc3miner-hiveos-0.1.1.tar.gz` |
+| Installation URL | `https://github.com/JustAResearcher/Miner1/releases/download/v0.1.2/bc3miner-hiveos-0.1.2.tar.gz` |
 | Hash algorithm | `sha3-256t` |
 | Wallet and worker template | `%WAL%.%WORKER_NAME%` |
 | Pool URL | `stratum+tcp://stratum-us.argfamining.com:24153` |

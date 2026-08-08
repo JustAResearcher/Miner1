@@ -1,4 +1,4 @@
-BC3Miner HiveOS 0.1.1
+BC3Miner HiveOS 0.1.2
 =====================
 
 Custom Miner name: bc3miner-hiveos
@@ -8,7 +8,7 @@ RTX 50-series / compute capability 12.0 uses the legacy blocking solver.
 Mixed rigs are supported; selection and process isolation use each GPU UUID.
 
 Required:
-  - Userspace compatible with the packaged payloads
+  - Ubuntu 18.04-class userspace or newer (glibc 2.27+)
   - NVIDIA driver 580+
 
 Flight sheet:

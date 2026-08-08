@@ -2,7 +2,7 @@
 set -euo pipefail
 
 readonly PACKAGE_NAME=bc3miner-hiveos
-readonly PACKAGE_VERSION=0.1.1
+readonly PACKAGE_VERSION=0.1.2
 readonly UPSTREAM_ROOT=bc3miner-0.1.1-linux-x86_64
 readonly UPSTREAM_URL=https://github.com/JustAResearcher/BC3Miner/releases/download/v0.1.1/bc3miner-0.1.1-linux-x86_64.tar.gz
 readonly UPSTREAM_SHA256=88bc37ba9116dadc714288414f79b9dba1b66ff20e615572e48377d5fb10a4be
@@ -30,7 +30,8 @@ Usage:
   $0 --sm89 PATH --sm89-sha256 HASH --sm120 PATH --sm120-sha256 HASH
 
 With no arguments, the pinned public BC3Miner v0.1.1 archive is downloaded.
-The explicit form is for separately validated HiveOS-compatible payloads.
+The explicit form is required to reproduce the older-HiveOS-compatible v0.1.2
+release payloads.
 EOF
 }
 

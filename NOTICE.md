@@ -5,6 +5,8 @@ Miner1 v0.1.1 distributes two Linux binary bundles: the
 `bc3miner-hiveos-0.1.1.tar.gz` HiveOS Custom Miner package. Each release asset
 has a SHA-256 sidecar.
 
+Miner1 v0.1.2 adds an older-HiveOS-compatible build of the HiveOS package.
+
 The HiveOS integration scripts are stored in this repository. BC3Miner solver
 executables are not stored in git; the package builder accepts checksum-pinned,
 validated payloads and embeds their exact identities in package metadata.
