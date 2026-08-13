@@ -3,10 +3,8 @@ set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 readonly SCRIPT_DIR
-readonly SM89_BINARY="${SCRIPT_DIR}/lib/sm89/bc3miner"
-readonly SM120_BINARY="${SCRIPT_DIR}/lib/sm120/bc3miner"
-readonly SM89_SHA256="26629330c9d19ef85a44307f8a0ca07c0842ac28e6db3bd25a39f6447089ec62"
-readonly SM120_SHA256="381cd83b27e2291c973e4d90139ff998b40e9cd44663117629551759fc1c59ca"
+readonly SM75_SM86_BINARY="${SCRIPT_DIR}/lib/sm75-sm86/bc3miner"
+readonly SM75_SM86_SHA256="__SM75_SM86_SHA256__"
 readonly RATE_DIR="${BC3MINER_RATE_DIR:-/var/log/miner/custom/bc3miner-hiveos/rates}"
 
 die() {
@@ -46,8 +44,7 @@ done
 command -v nvidia-smi >/dev/null 2>&1 || die 'nvidia-smi is required'
 command -v sha256sum >/dev/null 2>&1 || die 'sha256sum is required'
 
-verify_payload "$SM89_BINARY" "$SM89_SHA256"
-verify_payload "$SM120_BINARY" "$SM120_SHA256"
+verify_payload "$SM75_SM86_BINARY" "$SM75_SM86_SHA256"
 
 driver_version=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader \
     | sed -n '1p') || die 'could not query the NVIDIA driver'
@@ -78,9 +75,9 @@ while IFS=',' read -r raw_index raw_uuid raw_name raw_cc; do
     seen_indices[$index]=1
     seen_uuids[$uuid]=1
     case "$cc" in
-        8.9) inventory+=("$index|$uuid|$name|sm_89|bi|$SM89_BINARY|bi") ;;
-        12.0) inventory+=("$index|$uuid|$name|sm_120|legacy|$SM120_BINARY|legacy") ;;
-        *) die "GPU $index has unsupported compute capability $cc; supported: 8.9, 12.0" ;;
+        7.5) inventory+=("$index|$uuid|$name|sm_75|legacy|$SM75_SM86_BINARY|legacy") ;;
+        8.6) inventory+=("$index|$uuid|$name|sm_86|legacy|$SM75_SM86_BINARY|legacy") ;;
+        *) die "GPU $index has unsupported compute capability $cc; supported: 7.5, 8.6" ;;
     esac
 done <<< "$gpu_csv"
 [[ ${#inventory[@]} -gt 0 ]] || die 'no supported NVIDIA GPUs were detected'

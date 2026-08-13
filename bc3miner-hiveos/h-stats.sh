@@ -6,7 +6,7 @@ bc3_stats_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source "$bc3_stats_dir/h-manifest.conf"
 
 khs=0
-stats='{"hs":[0],"hs_units":"khs","total_khs":0,"temp":[0],"fan":[0],"uptime":0,"ver":"0.1.2","ar":[0,0],"algo":"sha3-256t","bus_numbers":[0],"solver":["unknown"]}'
+stats='{"hs":[0],"hs_units":"khs","total_khs":0,"temp":[0],"fan":[0],"uptime":0,"ver":"0.1.3_rc1","ar":[0,0],"algo":"sha3-256t","bus_numbers":[0],"solver":["unknown"]}'
 
 bc3_stats_trim() {
     local value="$1"
@@ -108,8 +108,7 @@ for bc3_idx in "${bc3_sorted_indices[@]}"; do
     bc3_solver_value=${bc3_solver[$bc3_idx]:-}
     if [[ -z $bc3_solver_value ]]; then
         case "${bc3_cc[$bc3_idx]:-}" in
-            8.9) bc3_solver_value=bi ;;
-            12.0) bc3_solver_value=legacy ;;
+            7.5|8.6) bc3_solver_value=legacy ;;
             *) bc3_solver_value=unknown ;;
         esac
     fi

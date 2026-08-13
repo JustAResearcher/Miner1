@@ -37,17 +37,13 @@ package_dir="$work_dir/$package_name"
 cd "$package_dir"
 
 [[ -x h-config.sh && -x h-run.sh && -x h-stats.sh && -x bc3miner ]]
-[[ -x lib/sm89/bc3miner && -x lib/sm120/bc3miner ]]
+[[ -x lib/sm75-sm86/bc3miner ]]
 bash -n h-config.sh h-run.sh h-stats.sh bc3miner
 sha256sum -c PAYLOAD_SHA256SUMS
-lib/sm89/bc3miner --self-test --cpu-only
-lib/sm120/bc3miner --self-test --cpu-only
-sm89_actual=$(sha256sum lib/sm89/bc3miner | awk '{print $1}')
-sm120_actual=$(sha256sum lib/sm120/bc3miner | awk '{print $1}')
-grep -Fqx "readonly SM89_SHA256=\"$sm89_actual\"" bc3miner
-grep -Fqx "readonly SM120_SHA256=\"$sm120_actual\"" bc3miner
-grep -Fq "\"sm89_bi_blocking\": \"$sm89_actual\"" BUILD_INFO.json
-grep -Fq "\"sm120_legacy_blocking\": \"$sm120_actual\"" BUILD_INFO.json
+lib/sm75-sm86/bc3miner --self-test --cpu-only
+payload_actual=$(sha256sum lib/sm75-sm86/bc3miner | awk '{print $1}')
+grep -Fqx "readonly SM75_SM86_SHA256=\"$payload_actual\"" bc3miner
+grep -Fq "\"sm75_sm86_legacy\": \"$payload_actual\"" BUILD_INFO.json
 
 fakebin="$work_dir/fakebin"
 mkdir -p "$fakebin"
@@ -73,29 +69,29 @@ EOF
 chmod +x "$fakebin/date"
 export PATH="$fakebin:$PATH"
 
-BC3_TEST_GPU_CSV='0, GPU-ADA, NVIDIA GeForce RTX 4070 Ti SUPER, 8.9' \
-    ./bc3miner --list-gpu-plan > "$work_dir/sm89.plan"
-grep -Fq 'GPU 0 uuid=GPU-ADA name=NVIDIA GeForce RTX 4070 Ti SUPER arch=sm_89 solver=bi backend=bi' "$work_dir/sm89.plan"
+BC3_TEST_GPU_CSV='0, GPU-TURING, NVIDIA GeForce RTX 2080 Ti, 7.5' \
+    ./bc3miner --list-gpu-plan > "$work_dir/sm75.plan"
+grep -Fq 'GPU 0 uuid=GPU-TURING name=NVIDIA GeForce RTX 2080 Ti arch=sm_75 solver=legacy backend=legacy' "$work_dir/sm75.plan"
 
-BC3_TEST_GPU_CSV='0, GPU-BLACKWELL, NVIDIA GeForce RTX 5090, 12.0' \
-    ./bc3miner --list-gpu-plan > "$work_dir/sm120.plan"
-grep -Fq 'GPU 0 uuid=GPU-BLACKWELL name=NVIDIA GeForce RTX 5090 arch=sm_120 solver=legacy backend=legacy' \
-    "$work_dir/sm120.plan"
+BC3_TEST_GPU_CSV='0, GPU-AMPERE, NVIDIA GeForce RTX 3080, 8.6' \
+    ./bc3miner --list-gpu-plan > "$work_dir/sm86.plan"
+grep -Fq 'GPU 0 uuid=GPU-AMPERE name=NVIDIA GeForce RTX 3080 arch=sm_86 solver=legacy backend=legacy' \
+    "$work_dir/sm86.plan"
 
-BC3_TEST_GPU_CSV=$'0, GPU-ADA, NVIDIA GeForce RTX 4070 Ti SUPER, 8.9\n1, GPU-BLACKWELL, NVIDIA GeForce RTX 5090, 12.0' \
+BC3_TEST_GPU_CSV=$'0, GPU-TURING, NVIDIA GeForce RTX 2080 Ti, 7.5\n1, GPU-AMPERE, NVIDIA GeForce RTX 3080, 8.6' \
     ./bc3miner --list-gpu-plan > "$work_dir/mixed.plan"
 [[ $(wc -l < "$work_dir/mixed.plan") -eq 2 ]]
-grep -Fq 'GPU 0 uuid=GPU-ADA name=NVIDIA GeForce RTX 4070 Ti SUPER arch=sm_89 solver=bi backend=bi' "$work_dir/mixed.plan"
-grep -Fq 'GPU 1 uuid=GPU-BLACKWELL name=NVIDIA GeForce RTX 5090 arch=sm_120 solver=legacy backend=legacy' \
+grep -Fq 'GPU 0 uuid=GPU-TURING name=NVIDIA GeForce RTX 2080 Ti arch=sm_75 solver=legacy backend=legacy' "$work_dir/mixed.plan"
+grep -Fq 'GPU 1 uuid=GPU-AMPERE name=NVIDIA GeForce RTX 3080 arch=sm_86 solver=legacy backend=legacy' \
     "$work_dir/mixed.plan"
 
 unsupported_rates="$work_dir/unsupported-rates"
-if BC3MINER_RATE_DIR="$unsupported_rates" BC3_TEST_GPU_CSV='0, GPU-OLD, NVIDIA GeForce RTX 3080, 8.6' \
+if BC3MINER_RATE_DIR="$unsupported_rates" BC3_TEST_GPU_CSV='0, GPU-ADA, NVIDIA GeForce RTX 4070 Ti SUPER, 8.9' \
     ./bc3miner --list-gpu-plan > "$work_dir/unsupported.out" 2>&1; then
     printf 'test: unsupported GPU unexpectedly passed\n' >&2
     exit 1
 fi
-grep -Fq 'unsupported compute capability 8.6' "$work_dir/unsupported.out"
+grep -Fq 'unsupported compute capability 8.9' "$work_dir/unsupported.out"
 [[ ! -e $unsupported_rates ]]
 
 config_file="$work_dir/bc3miner.conf"
@@ -127,31 +123,31 @@ fi
 
 rate_dir="$work_dir/rates"
 mkdir -p "$rate_dir"
-printf '%s\n' '[gpu0][bi] [speed] 920.02 MH/s | A 3 R 1' > "$rate_dir/gpu0.rate"
+printf '%s\n' '[gpu0][legacy] [speed] 920.02 MH/s | A 3 R 1' > "$rate_dir/gpu0.rate"
 printf '%s\n' '[gpu1][legacy] [speed] 1.024 GH/s | A 4 R 0' > "$rate_dir/gpu1.rate"
-export BC3_TEST_STATS_CSV=$'0, 00000000:01:00.0, 61, 70, 8.9\n1, 00000000:0A:00.0, 65, 75, 12.0'
+export BC3_TEST_STATS_CSV=$'0, 00000000:01:00.0, 61, 70, 7.5\n1, 00000000:0A:00.0, 65, 75, 8.6'
 CUSTOM_RATE_DIR="$rate_dir" source ./h-stats.sh
 [[ $khs == 1944020.000 ]]
 [[ $stats == *'"hs":[920020.000,1024000.000]'* ]]
 [[ $stats == *'"ar":[7,1]'* ]]
 [[ $stats == *'"bus_numbers":[1,10]'* ]]
-[[ $stats == *'"solver":["bi","legacy"]'* ]]
+[[ $stats == *'"solver":["legacy","legacy"]'* ]]
 
 touch -d '@1' "$rate_dir/gpu0.rate"
 CUSTOM_RATE_DIR="$rate_dir" source ./h-stats.sh
 [[ $khs == 1024000.000 ]]
 [[ $stats == *'"hs":[0,1024000.000]'* ]]
 
-printf '%s\n' '[gpu1][bi] [speed] 999.00 GH/s | A 99 R 99' > "$rate_dir/gpu0.rate"
+printf '%s\n' '[gpu1][legacy] [speed] 999.00 GH/s | A 99 R 99' > "$rate_dir/gpu0.rate"
 CUSTOM_RATE_DIR="$rate_dir" source ./h-stats.sh
 [[ $khs == 1024000.000 ]]
 [[ $stats == *'"hs":[0,1024000.000]'* ]]
 
 boundary_rate_dir="$work_dir/boundary-rates"
 mkdir -p "$boundary_rate_dir"
-printf '%s\n' '[gpu0][bi] [speed] 1.00 MH/s | A 1 R 0' > "$boundary_rate_dir/gpu0.rate"
+printf '%s\n' '[gpu0][legacy] [speed] 1.00 MH/s | A 1 R 0' > "$boundary_rate_dir/gpu0.rate"
 touch -d '@1000' "$boundary_rate_dir/gpu0.rate"
-export BC3_TEST_STATS_CSV='0, 00000000:01:00.0, 61, 70, 8.9'
+export BC3_TEST_STATS_CSV='0, 00000000:01:00.0, 61, 70, 7.5'
 export BC3_TEST_NOW=1015
 CUSTOM_RATE_DIR="$boundary_rate_dir" source ./h-stats.sh
 [[ $khs == 1000.000 ]]

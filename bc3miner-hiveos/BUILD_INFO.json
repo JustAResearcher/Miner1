@@ -1,10 +1,8 @@
 {
   "package": "bc3miner-hiveos",
-  "version": "0.1.2",
-  "payload_source": "__PAYLOAD_SOURCE__",
-  "source_archive_sha256": "__SOURCE_ARCHIVE_SHA256__",
+  "version": "0.1.3_rc1",
+  "payload_source": "local sm_75/sm_86 legacy candidate",
   "payloads": {
-    "sm89_bi_blocking": "__SM89_SHA256__",
-    "sm120_legacy_blocking": "__SM120_SHA256__"
+    "sm75_sm86_legacy": "__SM75_SM86_SHA256__"
   }
 }
