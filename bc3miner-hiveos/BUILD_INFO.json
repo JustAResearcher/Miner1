@@ -1,8 +1,8 @@
 {
   "package": "bc3miner-hiveos",
-  "version": "0.1.3_rc1",
-  "payload_source": "local sm_75/sm_86 legacy candidate",
+  "version": "0.1.3_rc2",
+  "payload_source": "local sm_75/sm_80/sm_86 legacy candidate",
   "payloads": {
-    "sm75_sm86_legacy": "__SM75_SM86_SHA256__"
+    "sm75_sm80_sm86_legacy": "__SM75_SM80_SM86_SHA256__"
   }
 }

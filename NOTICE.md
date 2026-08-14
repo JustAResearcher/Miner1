@@ -7,7 +7,7 @@ has a SHA-256 sidecar.
 
 Miner1 v0.1.2 adds an older-HiveOS-compatible build of the HiveOS package.
 
-Miner1 v0.1.3-rc1 adds an unvalidated RTX 20/30 HiveOS candidate. It is a
+Miner1 v0.1.3-rc2 adds an unvalidated SM 7.5/8.0/8.6 HiveOS candidate. It is a
 separate prerelease and does not replace the validated v0.1.2 RTX 40/50 asset.
 
 The HiveOS integration scripts are stored in this repository. BC3Miner solver

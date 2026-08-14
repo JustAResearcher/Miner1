@@ -37,13 +37,13 @@ package_dir="$work_dir/$package_name"
 cd "$package_dir"
 
 [[ -x h-config.sh && -x h-run.sh && -x h-stats.sh && -x bc3miner ]]
-[[ -x lib/sm75-sm86/bc3miner ]]
+[[ -x lib/sm75-sm80-sm86/bc3miner ]]
 bash -n h-config.sh h-run.sh h-stats.sh bc3miner
 sha256sum -c PAYLOAD_SHA256SUMS
-lib/sm75-sm86/bc3miner --self-test --cpu-only
-payload_actual=$(sha256sum lib/sm75-sm86/bc3miner | awk '{print $1}')
-grep -Fqx "readonly SM75_SM86_SHA256=\"$payload_actual\"" bc3miner
-grep -Fq "\"sm75_sm86_legacy\": \"$payload_actual\"" BUILD_INFO.json
+lib/sm75-sm80-sm86/bc3miner --self-test --cpu-only
+payload_actual=$(sha256sum lib/sm75-sm80-sm86/bc3miner | awk '{print $1}')
+grep -Fqx "readonly SM75_SM80_SM86_SHA256=\"$payload_actual\"" bc3miner
+grep -Fq "\"sm75_sm80_sm86_legacy\": \"$payload_actual\"" BUILD_INFO.json
 
 fakebin="$work_dir/fakebin"
 mkdir -p "$fakebin"
@@ -73,16 +73,23 @@ BC3_TEST_GPU_CSV='0, GPU-TURING, NVIDIA GeForce RTX 2080 Ti, 7.5' \
     ./bc3miner --list-gpu-plan > "$work_dir/sm75.plan"
 grep -Fq 'GPU 0 uuid=GPU-TURING name=NVIDIA GeForce RTX 2080 Ti arch=sm_75 solver=legacy backend=legacy' "$work_dir/sm75.plan"
 
+BC3_TEST_GPU_CSV='0, GPU-AMPERE-DC, NVIDIA CMP 170HX, 8.0' \
+    ./bc3miner --list-gpu-plan > "$work_dir/sm80.plan"
+grep -Fq 'GPU 0 uuid=GPU-AMPERE-DC name=NVIDIA CMP 170HX arch=sm_80 solver=legacy backend=legacy' \
+    "$work_dir/sm80.plan"
+
 BC3_TEST_GPU_CSV='0, GPU-AMPERE, NVIDIA GeForce RTX 3080, 8.6' \
     ./bc3miner --list-gpu-plan > "$work_dir/sm86.plan"
 grep -Fq 'GPU 0 uuid=GPU-AMPERE name=NVIDIA GeForce RTX 3080 arch=sm_86 solver=legacy backend=legacy' \
     "$work_dir/sm86.plan"
 
-BC3_TEST_GPU_CSV=$'0, GPU-TURING, NVIDIA GeForce RTX 2080 Ti, 7.5\n1, GPU-AMPERE, NVIDIA GeForce RTX 3080, 8.6' \
+BC3_TEST_GPU_CSV=$'0, GPU-TURING, NVIDIA GeForce RTX 2080 Ti, 7.5\n1, GPU-AMPERE-DC, NVIDIA CMP 170HX, 8.0\n2, GPU-AMPERE, NVIDIA GeForce RTX 3080, 8.6' \
     ./bc3miner --list-gpu-plan > "$work_dir/mixed.plan"
-[[ $(wc -l < "$work_dir/mixed.plan") -eq 2 ]]
+[[ $(wc -l < "$work_dir/mixed.plan") -eq 3 ]]
 grep -Fq 'GPU 0 uuid=GPU-TURING name=NVIDIA GeForce RTX 2080 Ti arch=sm_75 solver=legacy backend=legacy' "$work_dir/mixed.plan"
-grep -Fq 'GPU 1 uuid=GPU-AMPERE name=NVIDIA GeForce RTX 3080 arch=sm_86 solver=legacy backend=legacy' \
+grep -Fq 'GPU 1 uuid=GPU-AMPERE-DC name=NVIDIA CMP 170HX arch=sm_80 solver=legacy backend=legacy' \
+    "$work_dir/mixed.plan"
+grep -Fq 'GPU 2 uuid=GPU-AMPERE name=NVIDIA GeForce RTX 3080 arch=sm_86 solver=legacy backend=legacy' \
     "$work_dir/mixed.plan"
 
 unsupported_rates="$work_dir/unsupported-rates"

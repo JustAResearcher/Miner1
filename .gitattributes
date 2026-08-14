@@ -1,6 +1,8 @@
 * text=auto
+/.gitattributes text eol=lf
 *.sh text eol=lf
 *.conf text eol=lf
 *.md text eol=lf
 *.txt text eol=lf
 *.json text eol=lf
+/bc3miner-hiveos/bc3miner text eol=lf

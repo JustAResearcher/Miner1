@@ -6,7 +6,7 @@ bc3_stats_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source "$bc3_stats_dir/h-manifest.conf"
 
 khs=0
-stats='{"hs":[0],"hs_units":"khs","total_khs":0,"temp":[0],"fan":[0],"uptime":0,"ver":"0.1.3_rc1","ar":[0,0],"algo":"sha3-256t","bus_numbers":[0],"solver":["unknown"]}'
+stats='{"hs":[0],"hs_units":"khs","total_khs":0,"temp":[0],"fan":[0],"uptime":0,"ver":"0.1.3_rc2","ar":[0,0],"algo":"sha3-256t","bus_numbers":[0],"solver":["unknown"]}'
 
 bc3_stats_trim() {
     local value="$1"
